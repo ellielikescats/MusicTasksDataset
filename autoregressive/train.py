@@ -5,7 +5,7 @@ from torch import nn
 from torch.utils.data import DataLoader, random_split
 from DataModule import MIDIDataset
 from torch.nn.utils.rnn import pad_sequence
-from model2 import MusicTransformer
+from autoregressive.music_transformer_model import MusicTransformer
 
 
 
