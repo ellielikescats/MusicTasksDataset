@@ -1,13 +1,16 @@
 import os
 import torch
 from pathlib import Path
-from miditok import REMI
+from miditok import REMIPlus
+from lightning_model import LightningMusicTransformer
 
 # load saved tokeniser 
-tokenizer = REMI(params=Path("to", "tokenizer.json")) # change the path?
+tokeniser = REMIPlus(params=Path("/homes/erv01/Overpainting/preprocessing/REMIPlus_PiJAMA_data",
+                                  "tokenizer_params.json")) # change the path?
+print(len(tokeniser))
 
 # load the saved model
-# model = 
+# model = LightningMusicTransformer.load_from_check_point("/path/to/checkpoint.ckpt)
 
 # load input seed/primer that you want to use 
 # this will probably need to be a function that goes through a list of unseen MIDI data
