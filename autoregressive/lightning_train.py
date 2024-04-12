@@ -25,13 +25,19 @@ if __name__ == '__main__':
     x_directory = '/homes/erv01/Overpainting/preprocessing/tokens_x_labels'
     y_directory = '/homes/erv01/Overpainting/preprocessing/tokens_y_labels'
     csv_path = '/homes/erv01/Overpainting/preprocessing/tokens.csv'
+    root_directory = '/homes/erv01/Overpainting/autoregressive/checkpoints'
 
     data_module = LightningDataModule(csv_path,x_directory,y_directory)
 
 
     # Define the model
     model = LightningMusicTransformer()
-    trainer = pl.Trainer(accelerator="gpu", devices=2, strategy="ddp", 
-                         #logger=WandbLogger, 
-                         max_epochs=20)
+    trainer = pl.Trainer(default_root_dir=root_directory, # saves checkpoints to root_directory
+                         accelerator="gpu", 
+                         devices=2, # change here depending on the no. gpus used
+                         strategy="ddp", 
+                         #logger=WandbLogger, # at the moment is not working properly
+                         max_epochs=1) # 1 epoch for now to get the pipeline running
     trainer.fit(model, data_module)
+
+    # save the model

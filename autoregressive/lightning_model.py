@@ -68,6 +68,7 @@ class LightningMusicTransformer(pl.LightningModule):
         )
 
         self.final = nn.Linear(d_model, vocab_size)
+        #self.save_hyperparameters # option to save hyperparameters (be careful as could be quite large!)
 
     def forward(self, x, mask=None):
         """
