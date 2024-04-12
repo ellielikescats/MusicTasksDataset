@@ -4,6 +4,8 @@ from pathlib import Path
 from miditok import REMIPlus
 from lightning_model import LightningMusicTransformer
 
+input_midi_folder=""
+
 # load saved tokeniser 
 tokeniser = REMIPlus(params=Path("/homes/erv01/Overpainting/preprocessing/REMIPlus_PiJAMA_data",
                                   "tokenizer_params.json")) # change the path?
@@ -15,6 +17,12 @@ print(len(tokeniser))
 # load input seed/primer that you want to use 
 # this will probably need to be a function that goes through a list of unseen MIDI data
 # this also needs to be passed through the tokeniser before it can be used to generate
+
+def get_midi_and_tokenise(input_midi_path, tokeniser_params):
+    pass
+# for loop walking through input_midi_folder
+# take one MIDI
+    
 
 
 
@@ -30,6 +38,10 @@ print(len(tokeniser))
 
 # Convert the generated tokens back to MIDI
 
+if __name__ == '__main__':
+    
+    # 
+    
 
 
 

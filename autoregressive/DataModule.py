@@ -4,10 +4,6 @@ import torch
 import pandas as pd
 from torch.utils.data import Dataset
 
-# x_data_path = '/homes/erv01/Overpainting/preprocessing/tokens_x_labels'
-# y_data_path = '/homes/erv01/Overpainting/preprocessing/tokens_y_labels'
-# tokens_path = '/homes/erv01/Overpainting/preprocessing/tokens.csv'
-
 class MIDIDataset(Dataset):
     def __init__(self, csv_path, x_directory, y_directory):
         self.mapping = pd.read_csv(csv_path)
@@ -52,9 +48,14 @@ class MIDIDataset(Dataset):
 
         return data_tensor
 
+if __name__ == '__main__':
 
+    # x_data_path = '/homes/erv01/Overpainting/preprocessing/tokens_x_labels'
+    # y_data_path = '/homes/erv01/Overpainting/preprocessing/tokens_y_labels'
+    # tokens_path = '/homes/erv01/Overpainting/preprocessing/tokens.csv'
 
-# dataset = MIDIDataset(csv_path=tokens_path, x_directory=x_data_path, y_directory=y_data_path)
-# example_seq = dataset[0]
-# example_seq_2 = dataset[1]
-# # print(example_seq)
+    # dataset = MIDIDataset(csv_path=tokens_path, x_directory=x_data_path, y_directory=y_data_path)
+    # example_seq = dataset[0]
+    # example_seq_2 = dataset[1]
+
+    # #print(example_seq)

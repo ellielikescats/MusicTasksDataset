@@ -8,10 +8,6 @@ import pytorch_lightning as pl
 from torch.utils.data import DataLoader, random_split
 
 
-x_directory = '/homes/erv01/Overpainting/preprocessing/tokens_x_labels'
-y_directory = '/homes/erv01/Overpainting/preprocessing/tokens_y_labels'
-csv_path = '/homes/erv01/Overpainting/preprocessing/tokens.csv'
-
 # For reproducible train/val split
 # gen = torch.Generator()
 # gen.manual_seed(0)
