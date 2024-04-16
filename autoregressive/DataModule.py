@@ -50,12 +50,12 @@ class MIDIDataset(Dataset):
 
 if __name__ == '__main__':
 
-    # x_data_path = '/homes/erv01/Overpainting/preprocessing/tokens_x_labels'
-    # y_data_path = '/homes/erv01/Overpainting/preprocessing/tokens_y_labels'
-    # tokens_path = '/homes/erv01/Overpainting/preprocessing/tokens.csv'
+    x_data_path = '/homes/erv01/Overpainting/preprocessing/tokens_x_labels'
+    y_data_path = '/homes/erv01/Overpainting/preprocessing/tokens_y_labels'
+    tokens_path = '/homes/erv01/Overpainting/preprocessing/tokens.csv'
 
-    # dataset = MIDIDataset(csv_path=tokens_path, x_directory=x_data_path, y_directory=y_data_path)
-    # example_seq = dataset[0]
-    # example_seq_2 = dataset[1]
+    dataset = MIDIDataset(csv_path=tokens_path, x_directory=x_data_path, y_directory=y_data_path)
+    example_seq = dataset[0]
+    example_seq_2 = dataset[1]
 
-    # #print(example_seq)
+    #print(example_seq)

@@ -131,6 +131,7 @@ class LightningMusicTransformer(pl.LightningModule):
         return torch.sum(_loss) / torch.sum(mask)
     
     def training_step(self, train_batch, batch_idx):
+        #self.log("train/loss", loss)
         data = train_batch
         print("Data shape:", data.shape)
 

@@ -9,6 +9,7 @@ from autoregressive.music_transformer_model import MusicTransformer
 
 
 
+
 # Function for custom loss fuction used by Music Transformer
 def loss_fn(prediction, target, criterion=nn.CrossEntropyLoss(reduction='none')):
 # """

@@ -10,10 +10,11 @@ from lightning.pytorch.loggers import WandbLogger
 from lightning.pytorch import Trainer
 
 
+
 if __name__ == '__main__':
 
 # Intialise wandb
-    #wandb_logger = WandbLogger(log_model="all")
+    #wandb_logger = WandbLogger(project="TRANSFORMER_VARIATION")
     pl.seed_everything(1)
 
     # # Define the device
@@ -32,12 +33,13 @@ if __name__ == '__main__':
 
     # Define the model
     model = LightningMusicTransformer()
+
+    # Train model
     trainer = pl.Trainer(default_root_dir=root_directory, # saves checkpoints to root_directory
                          accelerator="gpu", 
                          devices=2, # change here depending on the no. gpus used
                          strategy="ddp", 
                          #logger=WandbLogger, # at the moment is not working properly
-                         max_epochs=1) # 1 epoch for now to get the pipeline running
+                         max_epochs=1000) # 1 epoch for now to get the pipeline running
     trainer.fit(model, data_module)
 
-    # save the model
