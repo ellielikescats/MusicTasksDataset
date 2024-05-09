@@ -9,8 +9,8 @@ from torch.utils.data import DataLoader, random_split
 
 
 # For reproducible train/val split
-# gen = torch.Generator()
-# gen.manual_seed(0)
+gen = torch.Generator()
+gen.manual_seed(0)
 
 batch_size = 32
 num_workers = 4
@@ -99,7 +99,7 @@ class LightningDataModule(pl.LightningDataModule):
         self.val = None
         self.batch_size = batch_size
         
-    def setup(self, stage: str):
+    def setup(self, stage: str = 'fit'):
 
         split_ratio = 0.9
 
@@ -108,8 +108,13 @@ class LightningDataModule(pl.LightningDataModule):
         val_size = len(self.dataset) - train_size
 
         self.train, self.val = random_split(self.dataset, [train_size, val_size]
-                                    # ,generator=gen
+        #                             # ,generator=gen
                                     )# Use generator=gen for reproducible train/val split
+
+        # train_indices = [i for i in range(train_size)]
+        # val_indices = [train_size + i for i in range(len(self.dataset) - train_size)]
+        # self.train = torch.utils.data.Subset(self.dataset, train_indices)
+        # self.val = torch.utils.data.Subset(self.dataset, val_indices)
     
         # !Need to create a test dataset split
         
@@ -120,14 +125,14 @@ class LightningDataModule(pl.LightningDataModule):
 
     def train_dataloader(self):
         train_dataset = DataLoader(self.train, batch_size=batch_size, collate_fn=pad_collate,
-                                   num_workers=num_workers, shuffle=True, pin_memory=True)
+                                   num_workers=num_workers, shuffle=True, pin_memory=True, drop_last=True)
         # Things to consider:
         # Drop last batch? Pin memory?
         return train_dataset
 
     def val_dataloader(self):
         val_dataset = DataLoader(self.val, batch_size=batch_size,collate_fn=pad_collate,
-                                 num_workers=num_workers, shuffle=True, pin_memory=True)
+                                 num_workers=num_workers, shuffle=True, pin_memory=True, drop_last=True)
         return val_dataset
 
     

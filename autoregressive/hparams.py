@@ -1,7 +1,7 @@
 # default hparams for the model
 hparams = {
-    "d_model": 128,
-    "num_layers": 3,
+    "d_model": 64,
+    "num_layers": 4,
     "num_heads": 8,
     "d_ff": 512,
     "max_rel_dist": 1024,

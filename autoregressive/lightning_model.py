@@ -1,13 +1,18 @@
 import torch
 from math import sqrt
 from torch import nn
+from masking import create_mask
 from hparams import hparams
 from layers import DecoderLayer, abs_positional_encoding
 import pytorch_lightning as pl
+import torch.nn.functional as F
+
+from lightning_datamodule import batch_size
 
 """
-Implementation of Music Transformer model, using torch.nn.TransformerDecoder
-based on Huang et. al, 2018, Vaswani et. al, 2017 (code from 2021 Aditya Gomatam).
+Implementation of Music Transformer model adapted from https://github.com/jason9693/MusicTransformer-pytorch/blob, using torch.nn.TransformerDecoder
+based on Huang et. al, 2018, Vaswani et. al, 2017 (code from 2021 Aditya Gomatam and https://github.com/jason9693/MusicTransformer-pytorch/blob).
+Model based on 
 """
 
 class LightningMusicTransformer(pl.LightningModule):
@@ -85,7 +90,7 @@ class LightningMusicTransformer(pl.LightningModule):
         """
         # embed x according to Vaswani et. al, 2017
         x = self.input_embedding(x)
-        print(x.shape)
+        # print(x.shape)
         x *= sqrt(self.d_model)
 
         # add absolute positional encoding if max_position > 0, and assuming max_position >> seq_len_x
@@ -133,30 +138,32 @@ class LightningMusicTransformer(pl.LightningModule):
     def training_step(self, train_batch, batch_idx):
         #self.log("train/loss", loss)
         data = train_batch
-        print("Data shape:", data.shape)
+        # print("Data shape:", data.shape)
 
         # from the model: x (torch.Tensor): input batch of sequences of shape (batch_size, seq_len)
 
         input = data[:, :-1]  # Exclude the last item of each sequence
         target = data[:, 1:]  # Exclude the first item (shifted version)
-        output = self(input)
+        output = self(input, mask=create_mask(input, n=input.dim() + 2))
 
-        print("Input tensor size:", input.shape)
-        print("Target tensor size:", target.shape)
-        print("Output tensor size:", output.shape)
+        # print("Input tensor size:", input.shape)
+        # print("Target tensor size:", target.shape)
+        # print("Output tensor size:", output.shape)
 
+        # Cross-entropy loss wants input to be (BS, NUM_CLASSES, DIMENSIONSxyz...)
+        # reshaped_output = output.reshape(batch_size, self.ntokens, -1)
+        # reshaped_target = target.reshape(batch_size, -1)
+        reshaped_output = output.transpose(-1, -2)
+        reshaped_target = target
 
-        reshaped_output = output.reshape(-1, self.ntokens)
-        reshaped_target = target.reshape(-1)
+        # print("Reshaped Input tensor size:", input.shape)
+        # print("Reshaped Target tensor size:", target.shape)
 
-        print("Reshaped Input tensor size:", input.shape)
-        print("Reshaped Target tensor size:", target.shape)
-
-        loss = self.custom_cross_entropy_loss(reshaped_output,reshaped_target)
-        print("Loss tensor size:", loss.shape)
+        loss = self.custom_cross_entropy_loss(reshaped_output, reshaped_target)
+        # print("Loss tensor size:", loss.shape)
 
         self.log('train_loss', loss)
-        print("Training loss:", loss)
+        # print("Training loss:", loss)
 
         return loss
 
@@ -168,10 +175,13 @@ class LightningMusicTransformer(pl.LightningModule):
 
         input = data[:, :-1]  # Exclude the last item of each sequence
         target = data[:, 1:]  # Exclude the first item (shifted version)
-        output = self(input)
+        output = self(input, mask=create_mask(input, n=max(input.dim() + 2, 2)))
 
-        reshaped_output = output.reshape(-1, self.ntokens)
-        reshaped_target = target.reshape(-1)
+        # Cross-entropy loss wants input to be (BS, NUM_CLASSES, DIMENSIONSxyz...)
+        # reshaped_output = output.reshape(batch_size, self.ntokens, -1)
+        # reshaped_target = target.reshape(batch_size, -1)
+        reshaped_output = output.transpose(-1, -2)
+        reshaped_target = target
 
         loss = self.custom_cross_entropy_loss(reshaped_output,reshaped_target)
         
@@ -182,3 +192,9 @@ class LightningMusicTransformer(pl.LightningModule):
     def configure_optimizers(self):
         optimizer = torch.optim.Adam(self.parameters(), lr=1e-3)
         return optimizer
+    
+    def on_epoch_end(self):
+        # Save the model every 10th epoch
+        if (self.trainer.current_epoch + 1) % 10 == 0:
+            self.trainer.save_checkpoint("best_model.ckpt")
+            print(f'Model saved at epoch {self.current_epoch + 1}')
